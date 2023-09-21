@@ -1,3 +1,5 @@
+configparser
+matplotlib
 numpy
 pandas
 scipy
