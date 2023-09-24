@@ -1,6 +1,0 @@
-symbol,cusip,issuer,bond_type,face_value,coupon_rate,next_coupon_date,maturity_date,last_price,rating,source_url
-BABA4187258,01609WAJ1,ALIBABA GROUP HLDG LTD,CORP,100,0.045,12/31/2023,11/28/2034,95.9,A,https://www.finra.org/finra-data/fixed-income/bond?symbol=BABA4187258&bondType=CORP
-AAPL4562446,037833DK3,APPLE INC,CORP,100,0.03,12/31/2023,11/13/2027,92.71,AA,https://www.finra.org/finra-data/fixed-income/bond?symbol=AAPL4562446&bondType=CORP
-GMT4629895,361448BC6,GATX CORP,CORP,100,0.0455,12/31/2023,11/7/2028,94.63,BBB,https://www.finra.org/finra-data/fixed-income/bond?symbol=GMT4629895&bondType=CORP
-UST,912797HC4,U.S. Treasury,Bill,100,0.01375,12/31/2023,07/15/2033,94.260749,AAA,https://treasurydirect.gov/TA_WS/securities/auctioned
-UST,912797JA6,U.S. Treasury,Bill,100,,,1/16/2024,98.234833,AAA,https://treasurydirect.gov/TA_WS/securities/auctioned
