@@ -1,0 +1,6 @@
+cusip,issuer,bond_type,face_value,coupon_rate,coupon_frequency,next_coupon_date,maturity_date,last_price,rating,source_url
+01609WAJ1,ALIBABA GROUP HLDG LTD,CORP,100,0.045,2,2023-11-28,2034-11-28,88.86256674,A,https://www.finra.org/finra-data/fixed-income/bond?symbol=BABA4187258&bondType=CORP
+037833BA7,Apple Inc AAPL,CORP,100,0.0345,2,2024-02-09,2045-02-09,77.68969448,AA,https://www.investing.com/rates-bonds/aapl-3.45-09-feb-2045
+931142CM3,Walmart Inc WMT,CORP,100,0.062,1,2024-04-15,2038-04-15,138.65,AA,https://www.investing.com/rates-bonds/wmt-6.2-15-apr-2038
+912797HC4,U.S. Treasury 10Yr,UST,100,0.03875,2,2024-02-15,2033-08-15,96.33577141,AAA,https://www.investing.com/rates-bonds/u.s.-10-year-bond-yield
+912797JA6,U.S. Treasury 5Yr,UST,100,0.04375,2,2024-02-28,2028-08-31,99.41551367,AAA,https://www.investing.com/rates-bonds/u.s.-5-year-bond-yield

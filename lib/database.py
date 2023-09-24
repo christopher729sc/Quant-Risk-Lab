@@ -1,3 +1,4 @@
+import logging
 import pandas as pd
 import sqlite3
 
@@ -66,7 +67,7 @@ class SQLiteYieldCurveFetcher:
         self.cursor = self.conn.cursor()
         self.yield_curve_table_name = yield_curve_table_name
 
-    def fetch_data_for_dates(self, instrument: str, start_date: str, end_date: str) -> list:
+    def fetch_data_for_dates(self, instrument: str, start_date: str, end_date: str) -> pd.DataFrame:
         """
         Fetch yield curve data for the specified date range.
 
@@ -81,9 +82,11 @@ class SQLiteYieldCurveFetcher:
         SELECT * FROM {self.yield_curve_table_name}
         WHERE instrument = ? and date BETWEEN ? AND ? 
         """
-
-        df = pd.read_sql_query(query, self.conn, params=(instrument, start_date, end_date))
-        return df.set_index('date')
+        try:
+            df = pd.read_sql_query(query, self.conn, params=(instrument, start_date, end_date))
+            return df.set_index('date')
+        except {KeyError, TypeError, ValueError} as e:
+            logging.warning(f'{e} Fetching data from database failed. The data does not exist')
 
     def close(self):
         """
@@ -126,6 +129,7 @@ class SQLServerExpressConnector:
                     f'DATABASE={self.database};'
                     f'UID={self.username};PWD={self.password}')
         # self.conn = pyodbc.connect(conn_str)
+        print('Setup Successful', conn_str)
 
     def execute_query(self, query):
         """
