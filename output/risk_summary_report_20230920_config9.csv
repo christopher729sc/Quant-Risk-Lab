@@ -1,13 +1,13 @@
 Risk Metric,Scenario Approach,Model Selection,Model Parameter,pnl
-var,historical,full_revaluation^ytm,var_type^1^95,-11560.88
-var,historical,full_revaluation^ytm,var_type^1^99,-16861.03
-var,historical,full_revaluation^ytm,var_type^10^95,-15229.92
-var,historical,full_revaluation^ytm,var_type^10^99,-22429.6
-var,historical,full_revaluation^ytm,expected_shortfall^10^99,-25166.75
-var,historical,full_revaluation^ytm,expected_shortfall^10^95,-19550.38
-var,historical,sensitivity_approximation^ytm,var_type^10^95,-35533.23
-var,historical,sensitivity_approximation^ytm,var_type^10^99,-51544.01
-var,monte_carlo,sensitivity_approximation^ytm,var_type^10^95,-55189.06
-var,monte_carlo,sensitivity_approximation^ytm,var_type^10^99,-77799.7
-stress_testing,financial_crisis_2008,full_revaluation^zero_curve,,-37737.58
-stress_testing,oil_crisis_1974,full_revaluation^zero_curve,,-80839.88
+var,historical,full_revaluation^ytm,var_type^1^95,-9507.51
+var,historical,full_revaluation^ytm,var_type^1^99,-13858.01
+var,historical,full_revaluation^ytm,var_type^10^95,-12817.15
+var,historical,full_revaluation^ytm,var_type^10^99,-18756.46
+var,historical,full_revaluation^ytm,expected_shortfall^10^99,-20996.62
+var,historical,full_revaluation^ytm,expected_shortfall^10^95,-16801.95
+var,historical,sensitivity_approximation^ytm,var_type^10^95,-30276.29
+var,historical,sensitivity_approximation^ytm,var_type^10^99,-43752.0
+var,monte_carlo,sensitivity_approximation^ytm,var_type^10^95,-48067.14
+var,monte_carlo,sensitivity_approximation^ytm,var_type^10^99,-67852.07
+stress_testing,financial_crisis_2008,full_revaluation^zero_curve,,-78913.58
+stress_testing,oil_crisis_1974,full_revaluation^zero_curve,,-100973.5
