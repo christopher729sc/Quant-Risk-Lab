@@ -1,8 +1,8 @@
 import datetime as dt
 import logging
-
 import pandas as pd
 import scipy as sp
+import sys
 from dateutil.relativedelta import relativedelta
 
 
@@ -142,3 +142,16 @@ def format_report(data):
     # Reorder columns for the final display
     formatted_data = data[['Risk Metric', 'Scenario Approach', 'Model Selection', 'Model Parameter', 'pnl']]
     return formatted_data
+
+
+class LoggerUtil(object):
+    def __init__(self, output_path='./output/log/runlog.log', stream=sys.stdout):
+        self.terminal = stream
+        self.log = open(output_path, 'w')
+
+    def write(self, msg):
+        self.terminal.write(msg)
+        self.log.write(msg)
+
+    def flush(self):
+        pass

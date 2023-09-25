@@ -12,7 +12,7 @@ import lib.scenario as sm
 from lib.pricer import *
 
 # Set up logging config
-logging.basicConfig(format='%(message)s', level=logging.INFO)
+logging.basicConfig(filename='./output/log/runlog.log', filemode='w',format='%(message)s', level=logging.INFO)
 
 
 def get_argument():
@@ -73,12 +73,14 @@ def main():
     :return: None
     """
 
+    # Argument parser and application configs
     args = get_argument()
     config_id = 'config%s' % args.config_path
     config = read_config('./config/config%s.ini' % args.config_path)
 
     # Printing version info
     as_of_date = config['RUN_SETUP']['as_of_date']
+    sys.stdout = ut.LoggerUtil()
     logging.info("As of Date: %s", as_of_date)
     logging.info("Running configuration based on config file: %s", args.config_path)
     logging.info("Current version: %s", config['VERSION_INFO']['version_id'])
