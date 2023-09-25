@@ -11,9 +11,6 @@ import lib.risk_engine as reng
 import lib.scenario as sm
 from lib.pricer import *
 
-# Set up logging config
-logging.basicConfig(filename='./output/log/runlog.log', filemode='w',format='%(message)s', level=logging.INFO)
-
 
 def get_argument():
     """
@@ -72,6 +69,10 @@ def main():
     Main function of the Quant-Risk-Lab.
     :return: None
     """
+    print("=============================================")
+    print("   Welcome to the Quant-Risk-Lab Application!")
+    print("=============================================")
+    print("Initializing the application")
 
     # Argument parser and application configs
     args = get_argument()
@@ -79,11 +80,15 @@ def main():
     config = read_config('./config/config%s.ini' % args.config_path)
 
     # Printing version info
+    # Set up logging config
+    logging.basicConfig(filename='./output/log/runlog%s.log' % config_id, filemode='w', format='%(message)s', level=logging.INFO)
     as_of_date = config['RUN_SETUP']['as_of_date']
     sys.stdout = ut.LoggerUtil()
     logging.info("As of Date: %s", as_of_date)
     logging.info("Running configuration based on config file: %s", args.config_path)
+    print("Running configuration based on config%s ...\n" % args.config_path)
     logging.info("Current version: %s", config['VERSION_INFO']['version_id'])
+
 
     ####################################################################################################################
     # The code below is the solution to provide solution to
@@ -276,9 +281,9 @@ def main():
         if loss_calculation_approach in ['expected_shortfall', 'var_type']:
             n_day = int(r.split("|")[3].split("^")[1])
             m_percentile = int(r.split("|")[3].split("^")[2])
-            # var_detail = "%s-day %s at %s percentile" % (r.split("|")[3].split("^")[1],
-            #                                              loss_calculation_approach,
-            #                                              r.split("|")[3].split("^")[2])
+            var_detail = "%s-day %s at %s percentile" % (r.split("|")[3].split("^")[1],
+                                                         loss_calculation_approach,
+                                                         r.split("|")[3].split("^")[2])
         else:
             n_day = None
             m_percentile = None
@@ -305,15 +310,15 @@ def main():
                 pass
                 # risk_obj = reng.StressTesting()
 
-            # logging.info("Running Risk Engine using Model Configuration as below \n"
-            #              "Risk Metric: %s \n"
-            #              "Scenario generation approach: %s \n"
-            #              "Valuation approach: %s \n"
-            #              "Pricing model: %s \n"
-            #              "Loss calculation approach: %s \n%s \n"
-            #              "Final Result = %s \n",
-            #              risk_metric, scenario_approach, valuation_approach, pricing_model,
-            #              loss_calculation_approach, var_detail, round(total_loss, 2))
+            logging.info("Running Risk Engine using Model Configuration as below \n"
+                         "Risk Metric: %s \n"
+                         "Scenario generation approach: %s \n"
+                         "Valuation approach: %s \n"
+                         "Pricing model: %s \n"
+                         "Loss calculation approach: %s \n%s \n"
+                         "Final Result = %s \n",
+                         risk_metric, scenario_approach, valuation_approach, pricing_model,
+                         loss_calculation_approach, var_detail, round(total_loss, 2))
 
         except (AttributeError, ValueError) as e:
             logging.error(f'Fail to run {r} due to {e} \n')
@@ -340,13 +345,13 @@ def main():
             _pf['%s price' % scn] = _pf.apply(lambda x: bond_price_zero_curve(scenario_manager.scenarios[scn], x, _cf),
                                               axis=1)
             _pf['stress_testing|%s|full_revaluation^zero_curve' % scn] = ((_pf['%s price' % scn]
-                                                                          - _pf['last_price'])
+                                                                           - _pf['last_price'])
                                                                           * _pf['quantity'])
 
         pf_all.append(_pf)
     portfolio_manager.portfolio = pd.concat(pf_all)
     _report_str = portfolio_manager.portfolio[['stress_testing|financial_crisis_2008|full_revaluation^zero_curve',
-                                               'stress_testing|oil_crisis_1974|full_revaluation^zero_curve']].sum().\
+                                               'stress_testing|oil_crisis_1974|full_revaluation^zero_curve']].sum(). \
         reset_index().rename(columns={'index': 'Model Config', 0: 'pnl'})
 
     df_final_report = round(pd.concat([df_risk_sum_report, _report_str]), 2)
@@ -361,6 +366,15 @@ def main():
                       ut.format_report(df_final_report),
                       config_id,
                       index_on_off=False)
+
+    ut.write_to_excel(as_of_date,
+                      as_of_date,
+                      config,
+                      'portfolio_report',
+                      portfolio_manager.portfolio,
+                      config_id,
+                      index_on_off=False)
+    print('Risk engine runs successfully. Please refer to the output/log/runlog.log for all details')
 
 
 if __name__ == "__main__":

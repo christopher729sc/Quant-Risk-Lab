@@ -5,7 +5,7 @@ import pandas as pd
 from lib.utils import *
 from lib.pricer import *
 
-logging.basicConfig(filename='./output/log/runlog.log', filemode='w',format='%(message)s', level=logging.INFO)
+#logging.basicConfig(filename='./output/log/runlog.log', filemode='w',format='%(message)s', level=logging.INFO)
 
 """
 NOTE:
