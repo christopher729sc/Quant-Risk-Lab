@@ -5,7 +5,7 @@ import pandas as pd
 from lib.utils import *
 from lib.pricer import *
 
-logging.basicConfig(format='%(message)s', level=logging.INFO)
+logging.basicConfig(filename='./output/log/runlog.log', filemode='w',format='%(message)s', level=logging.INFO)
 
 """
 NOTE:
@@ -154,7 +154,6 @@ class PortfolioManager:
         portfolio_pnl = portfolio_yields[[col for col in portfolio_yields.columns if col.endswith('_value')]].diff()
         portfolio_pnl.columns = [col.replace('_market_value', '_daily_pnl').replace('_value', '_daily_pnl')
                                  for col in portfolio_pnl.columns]
-        print(portfolio_pnl.columns)
 
         # Assign it back to the portfolio
         self.portfolio_yields = portfolio_yields.sort_index(ascending=False)
