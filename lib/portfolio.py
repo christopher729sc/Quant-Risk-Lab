@@ -1,6 +1,4 @@
-import datetime as dt
 import logging
-import numpy as np
 import pandas as pd
 
 # Customized Utilities
@@ -63,21 +61,23 @@ class PortfolioManager:
 
     def __init__(self, config, instruments):
 
-        self.portfolio_yields = None
-        self.portfolio_pnl = None
         self.config = config
         self.as_of_date = config['RUN_SETUP']['as_of_date']
         self.number_of_instruments = len(instruments['cusip'].unique())
         self.portfolio = instruments.copy()
+        self.portfolio_yields = None
+        self.portfolio_pnl = None
         self.weightage_approach = config['PORTFOLIO']['weightage_approach']
         self.total_fund = float(config['PORTFOLIO']['total_fund'])
 
-    def create_portfolio(self, ):
+    def create_portfolio(self):
         if self.weightage_approach == 'equal_weight':
             weights = np.divide(np.ones(self.number_of_instruments), self.number_of_instruments)
         elif self.weightage_approach == 'random_weight':
             rands = np.random.rand(5)
             weights = np.divide(rands, rands.sum())
+        else:
+            weights = np.array([float(x) for x in self.weightage_approach.split('|')])
 
         self.portfolio['as_of_date'] = self.as_of_date
         self.portfolio['years_to_maturity'] = self.portfolio.apply(lambda x:
@@ -88,9 +88,10 @@ class PortfolioManager:
         self.portfolio['market_value'] = weights * self.total_fund
         self.portfolio['quantity'] = self.portfolio['market_value'] / self.portfolio['last_price']
 
-    def calculate_daily_yield_change(self, config: object, yield_curve_fetcher: object):
+    def calculate_daily_yield_change(self, config, yield_curve_fetcher):
 
-        inst_yield_curve_mapping = pre_process_mapping(config['MODEL']['instrument_yield_curve_mapping'].split('|'))
+        inst_yield_curve_mapping = pre_process_mapping(config['RISK_ENGINE']
+                                                       ['instrument_yield_curve_mapping'].split('|'))
         start_date = config['PORTFOLIO']['daily_yield_change_start_date']
 
         # logging.info("Daily yield change from %s to %s", start_date, self.as_of_date)
@@ -151,7 +152,7 @@ class PortfolioManager:
 
         # Calculate pnl
         portfolio_pnl = portfolio_yields[[col for col in portfolio_yields.columns if col.endswith('_value')]].diff()
-        portfolio_pnl.columns = [col.replace('_market_value','_daily_pnl').replace('_value','_daily_pnl')
+        portfolio_pnl.columns = [col.replace('_market_value', '_daily_pnl').replace('_value', '_daily_pnl')
                                  for col in portfolio_pnl.columns]
         print(portfolio_pnl.columns)
 

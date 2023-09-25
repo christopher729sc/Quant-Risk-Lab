@@ -79,19 +79,19 @@ def calculate_years_to_maturity(as_of_date: str, maturity_date: str) -> float:
         # Calculate difference in days and then convert to years
         days_difference = (maturity_date_dt - as_of_date_dt).days
         years_to_maturity = days_difference / 365.25
+        return years_to_maturity
 
     except ValueError:
         logging.error('Invalid date format')
-        return None
-
-    return years_to_maturity
+        return 0
 
 
 def write_to_excel(start_date: str,
                    as_of_date: str,
-                   config: object,
+                   config,
                    report_name: str,
                    data: pd.DataFrame,
+                   config_id: str,
                    index_on_off: bool = True) -> None:
     """
     Write the portfolio yields DataFrame to an Excel file based on the designated path from the config file.
@@ -99,13 +99,46 @@ def write_to_excel(start_date: str,
 
     try:
         output_path = config['REPORT'][report_name]
-        output_path = output_path.replace('YYYYMMDD1', start_date.replace('-',''))
+        output_path = output_path.replace('YYYYMMDD2', 'YYYYMMDD2_%s' % config_id)
+        output_path = output_path.replace('YYYYMMDD1', start_date.replace('-', ''))
         output_path = output_path.replace('YYYYMMDD2', as_of_date.replace('-', ''))
 
-        data.to_csv(output_path, index = index_on_off)
+        data.to_csv(output_path, index=index_on_off)
         logging.info(f"{report_name} successfully saved to {output_path}")
 
     except KeyError:
         logging.error("The report was not found in the config file.")
     except Exception as e:
         logging.error(f"Error saving report to Excel: {e}")
+
+
+def convert_dict_to_dataframe(data_dict: dict) -> pd.DataFrame:
+    """
+    Combines data frames from a dictionary into a single data frame.
+
+    :param data_dict: Dictionary containing model configurations as keys and corresponding data frames as values.
+    :return: Combined data frame.
+    """
+    dfs = []
+    for key, df in data_dict.items():
+        if df is not None:
+            df = df.copy()
+            df['model_config'] = key
+            dfs.append(df)
+
+    combined_df = pd.concat(dfs)
+    return combined_df
+
+
+def format_report(data):
+    # Split the 'Model Config' column into separate components
+    data['Risk Metric'] = data['Model Config'].apply(lambda x: x.split('|')[0] if '|' in x else x)
+    data['Scenario Approach'] = data['Model Config'].apply(lambda x: x.split('|')[1] if '|' in x else None)
+    data['Model Selection'] = data['Model Config'].apply(
+        lambda x: x.split('|')[2] if '|' in x and len(x.split('|')) > 2 else None)
+    data['Model Parameter'] = data['Model Config'].apply(
+        lambda x: x.split('|')[3] if '|' in x and len(x.split('|')) > 3 else None)
+
+    # Reorder columns for the final display
+    formatted_data = data[['Risk Metric', 'Scenario Approach', 'Model Selection', 'Model Parameter', 'pnl']]
+    return formatted_data

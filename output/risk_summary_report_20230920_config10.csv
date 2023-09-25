@@ -1,0 +1,13 @@
+Risk Metric,Scenario Approach,Model Selection,Model Parameter,pnl
+var,historical,full_revaluation^ytm,var_type^1^95,-11644.81
+var,historical,full_revaluation^ytm,var_type^1^99,-15695.63
+var,historical,full_revaluation^ytm,var_type^10^95,-15609.43
+var,historical,full_revaluation^ytm,var_type^10^99,-22304.47
+var,historical,full_revaluation^ytm,expected_shortfall^10^99,-24665.32
+var,historical,full_revaluation^ytm,expected_shortfall^10^95,-19780.28
+var,historical,sensitivity_approximation^ytm,var_type^10^95,-37261.01
+var,historical,sensitivity_approximation^ytm,var_type^10^99,-53283.48
+var,monte_carlo,sensitivity_approximation^ytm,var_type^10^95,-56539.01
+var,monte_carlo,sensitivity_approximation^ytm,var_type^10^99,-79210.65
+stress_testing,financial_crisis_2008,full_revaluation^zero_curve,,-79754.28
+stress_testing,oil_crisis_1974,full_revaluation^zero_curve,,-124765.24
