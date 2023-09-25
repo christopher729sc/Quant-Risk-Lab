@@ -123,27 +123,40 @@ def bond_duration(instrument, dy=0.01):
     price_plus = bond_price_ytm(instrument, ytm_plus)
 
     modified_duration = (price_minus - price_plus) / (2 * price * dy)
-    dv01 = modified_duration * 0.0001 * price
+    dv01 = - modified_duration * 0.0001 * price
     convexity = (price_minus + price_plus - 2 * price) / (price * dy ** 2)
+    cr01 = dv01 * np.random.rand() / 10
 
-    return pd.Series([modified_duration, dv01, convexity],
-                     index=['modified_duration', 'dv01', 'convexity'])
+    return pd.Series([modified_duration, dv01, convexity, cr01],
+                     index=['modified_duration', 'dv01', 'convexity', 'cr01'])
 
 
+def bond_price_zero_curve(scenarios, instrument, cashflows,  credit_spread_type=1):
+    np.random.seed(12345)
+    rate_shock = scenarios['rate']/100000
+    credit_shock = scenarios['credit']/100000
 
-def bond_convexity(instrument, dy=0.01):
-    """ Calculate convexity of a bond """
+    if 'Treasury' in instrument['issuer']:
+        credit_spread_type = 0
+    else:
+        credit_spread_type = credit_spread_type
 
-    price = instrument['last_price']
     face_value = instrument['face_value']
     coupon_rate = instrument['coupon_rate']
-    freq = int(instrument['coupon_frequency'])
-    years_to_maturity = int(instrument['years_to_maturity'])
-    ytm = float(instrument['last_yield'])
+    r_list = 2 * cashflows['corresponding_zero_rate'].values + rate_shock
 
-    ytm_minus = ytm - dy
-    price_minus = bond_price(par, T, ytm_minus, coup, freq)
-    ytm_plus = ytm + dy
-    price_plus = bond_price(par, T, ytm_plus, coup, freq)
+    if credit_spread_type > 0:
+        c_list = np.random.rand(len(r_list)) / 100
+    else:
+        c_list = np.zeros(len(r_list))
 
-    return convexity
+    r_list = r_list + c_list + credit_shock
+    time_list = cashflows['cashflow_date_in_years'].values
+    per_coupon = face_value * coupon_rate
+    discounted_coupon = 0
+
+    for r, time in zip(r_list, time_list):
+        if r != r_list[-1]:
+            discounted_coupon = discounted_coupon + per_coupon / (1 + r) ** time
+
+    return discounted_coupon + face_value / (1 + r_list[-1]) ** time_list[-1]

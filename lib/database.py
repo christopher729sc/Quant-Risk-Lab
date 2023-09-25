@@ -45,7 +45,11 @@ class SQLiteInitialSetup:
         _df_yield_curve.to_sql(self.yield_curve_table_name,
                                self.conn,
                                if_exists="replace",
-                               index=False)
+                               index=False,
+                               dtype={'date': 'TEXT',
+                                      'tenor': 'INTEGER',
+                                      'yield_to_maturity': 'REAL',
+                                      'instrument': 'TEXT'})
 
     def close(self):
         """
